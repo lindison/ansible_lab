@@ -1,0 +1,5 @@
+--- # docker things
+- hosts: docker
+  tasks: 
+   - name: start nginx container
+     docker: name=nginx image=nginx state=started

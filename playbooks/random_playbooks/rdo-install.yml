@@ -1,0 +1,15 @@
+--- # Install OpenStack from script
+- hosts: openstack
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  gather_facts: no
+
+  tasks: 
+
+  - name: Copy RDO from script
+    copy: src=/vagrant/rdo-install.sh dest=/home/vagrant/ owner=vagrant group=vagrant mode=0777
+
+  - name: Execute RDO install script
+    command: sh /home/vagrant/rdo-install.sh
+

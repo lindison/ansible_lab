@@ -1,0 +1,155 @@
+---
+- hosts: wordpress_app
+  gather_facts: True
+  vars:
+    wp_mysql_db: MyWP
+    wp_mysql_user: wpUser
+    wp_mysql_password: wpP4ss
+    mysql_root_user: root
+    mysql_root_password: Solinea
+
+- hosts: wordpress_db
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+# Multi-Tier WP install
+
+## Setup dependencies
+  tasks:
+    - name: Add repo file
+      template: src=mariadb.list.j2 dest=/etc/apt/sources.list.d/mariadb.list owner=root group=root mode=0644
+      register: mariadb_list
+
+    - name: Add repo key
+      apt_key: id=1BB943DB url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xCBCB082A1BB943DB state=present
+      register: mariadb_key
+
+#    - name: Update all packages
+#      apt: upgrade=dist update_cache=yes
+
+    - name: Unattended package installation
+      shell: export DEBIAN_FRONTEND=noninteractive
+      changed_when: false
+
+    - name: Install needed packages
+      apt: name={{ item }} state=present update_cache=yes
+      with_items:
+          - vim-nox
+          - apache2
+          - mariadb-server
+          - mariadb-client
+          - php5
+          - php5-mysql
+          - python-mysqldb
+
+    - name: Enable remote MySQL access
+      lineinfile: dest=/etc/mysql/my.cnf regexp="^bind-address" line="bind-address = 0.0.0.0"
+
+    - name: Set root password
+      mysql_user: name="{{ mysql_root_user }}" password="{{ mysql_root_password }}" host="{{ item }}" priv=*.*:ALL,GRANT state=present
+      with_items:
+         - "{{ ansible_hostname }}"
+         - "{{ hostvars['web01']['ansible_eth1']['ipv4']['address'] }}"
+         - 127.0.0.1
+         - ::1
+         - localhost
+      ignore_errors: true
+
+    - name: Copy ~/.my.cnf to nodes
+      template: src=my.cnf.j2 dest=/root/.my.cnf
+
+    - name: Create MariaDB database
+      mysql_db: name={{ wp_mysql_db }} state=present
+
+    - name: Create MariaDB username and password
+      mysql_user:
+          login_user={{ mysql_root_user }}
+          login_password={{ mysql_root_password }}
+          name={{ wp_mysql_user }}
+          host={{ hostvars['web01']['ansible_eth1']['ipv4']['address'] }}
+          password={{ wp_mysql_password }}
+          priv=*.*:ALL
+
+    - name: Ensure MariaDB is running (and enable it at boot)
+      service: name=mysql state=restarted enabled=yes
+
+- hosts: wordpress-app
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+
+  tasks:
+#    - name: Update all packages
+#      apt: upgrade=dist update_cache=yes
+
+    - name: Unattended package installation
+      shell: export DEBIAN_FRONTEND=noninteractive
+      changed_when: false
+
+    - name: Install needed packages
+      apt: name={{ item }} state=present update_cache=yes
+      with_items:
+          - vim-nox
+          - apache2
+          - mysql-client
+          - php5
+          - php5-mysql
+          - python-mysqldb
+
+    - name: Is WP-CLI downloaded?
+      stat: path="/usr/local/bin/wp"
+      register: wpcli_is_downloaded
+
+    - name: Download WP-CLI
+      get_url:
+        url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        dest: /usr/local/bin/wp
+        mode: 0655
+      when: wpcli_is_downloaded.stat.exists == False
+
+    - name: Make WP-CLI executable
+      file:
+        path: /usr/local/bin/wp
+        mode: u=rwx,g=rx,o=rx
+      when: wpcli_is_downloaded.stat.exists == False
+
+    - name: Is WordPress downloaded?
+      stat: path=/var/www/html/index.php
+      register: wordpress_is_downloaded
+
+    - name: Download WordPress
+      shell: /usr/local/bin/wp core download --allow-root
+      args:
+        chdir: /var/www/html
+
+      when: wordpress_is_downloaded.stat.exists == False
+
+    - name: Configure WordPress
+      shell: /usr/local/bin/wp core config --allow-root
+                --path=/var/www/html
+                --dbhost="{{ hostvars['db01']['ansible_eth1']['ipv4']['address'] }}"
+                --dbname="{{ wp_mysql_db }}"
+                --dbuser="{{ wp_mysql_user }}"
+                --dbpass="{{ wp_mysql_password }}"
+      when: wordpress_is_downloaded.stat.exists == False
+
+    - name: Is WordPress installed?
+      shell: /usr/local/bin/wp core is-installed --allow-root
+      args:
+        chdir: /var/www/html/
+      register: wordpress_is_installed
+      ignore_errors: True
+
+    - name: Install WordPress tables
+      sudo: yes
+      shell: /usr/local/bin/wp core install --allow-root
+                --path=/var/www/html
+                --url="http://wp.smithss.org"
+                --title="Solinea Ansible"
+                --admin_user="admin"
+                --admin_password="Solinea"
+                --admin_email="jason@solinea.com"
+      when: wordpress_is_installed|failed
+
+    #Remove index.html so WP loads at default URL
+    - file: path=/var/www/html/index.html state=absent

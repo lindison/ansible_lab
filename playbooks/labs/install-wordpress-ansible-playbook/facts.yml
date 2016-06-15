@@ -1,0 +1,28 @@
+---
+- hosts: all
+  gather_facts: True
+
+- hosts: db 
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  vars:
+    mysql_host_ip: "{{ ansible_eth1.ipv4.address }}"
+# Multi-Tier WP install
+
+## debug IP 
+  tasks:
+    - debug: msg="{{ ansible_eth1.ipv4.address }}"
+    - debug: msg="{{ mysql_host_ip }}"
+    - debug: msg="{{ hostvars['db01']['ansible_eth1']['ipv4']['address'] }}"
+
+
+- hosts: web
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  gather_facts: False
+
+  tasks:
+ #   - debug: msg="{{ db01.ansible_eth1.ipv4.address }}"
+    - debug: msg="{{ hostvars['db01']['ansible_eth1']['ipv4']['address'] }}"

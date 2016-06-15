@@ -1,0 +1,15 @@
+--- # Variables at a command line example
+- hosts: '{{ hosts }}'
+  remote_user: '{{ user }}'
+  become: yes
+  become_method: sudo
+  connection: ssh
+  
+  tasks:
+  - name: Install the {{ pkg }} package
+    yum: pkg={{ pkg }} state=latest
+    when: ansible_os_family == "RedHat"
+
+  - name: Install the {{ pkg }} package
+    apt: pkg={{ pkg }} state=latest
+    when: ansible_os_family == "Debian"

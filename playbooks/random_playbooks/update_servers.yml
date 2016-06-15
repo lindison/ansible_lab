@@ -1,0 +1,23 @@
+--- # Update all servers
+ - hosts: test
+   remote_user: vagrant
+   become: yes
+   become_method: sudo
+   connection: ssh
+   gather_facts: yes
+
+   tasks:
+     - name: Ubuntu -- Update APT repo
+       raw: apt-get update
+       when: ansible_os_family == "Debian"
+
+     - name: Ubuntu -- Update APT repo
+       raw: apt-get -y upgrade
+       when: ansible_os_family == "Debian"
+
+
+     - name: CentOS -- Update YUM repo
+       raw: yum upgrade -y
+       when: ansible_os_family == "RedHat"
+
+

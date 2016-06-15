@@ -1,0 +1,33 @@
+--- # This is my first YAML playbook for Ansible
+- hosts: centos
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  connection: ssh
+
+  vars:
+    playbook_version: 0.1b
+
+  vars_files:
+    - conf/copyright.yml
+    - conf/webdefaults.yml
+
+  vars_prompt:
+    - name: web_domain
+      prompt: Web Domain?
+
+  tasks:
+    - name: Install httpd
+      action: yum name=httpd state=installed
+      when: ansible_os_family == "RedHat"
+      notify: start httpd server
+    - name: Install apache
+      action: apt name=apache2 state=installed
+      when: ansible_os_family == "Debian"
+      notify: start apache2 server
+ 
+  handlers:
+    - name: start httpd server
+      action: service name=httpd state=restarted
+    - name: start apache2 server
+      action: service name=apache2 state=restarted

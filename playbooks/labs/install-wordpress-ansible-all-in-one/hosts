@@ -1,0 +1,2 @@
+[all]
+ web01 ansible_host=192.168.33.50 ansible_ssh_user=vagrant

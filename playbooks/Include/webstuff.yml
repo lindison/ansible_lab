@@ -1,0 +1,13 @@
+--- # Web Playbook
+- hosts: webservers
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  connection: ssh
+  vars_files: 
+  - variables/variables.yml
+  tasks:
+    - include: packages/packages.yml
+    - include: commands/commands.yml
+  handlers:
+    - include: handler/handler.yml

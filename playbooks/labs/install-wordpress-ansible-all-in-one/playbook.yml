@@ -1,0 +1,81 @@
+---
+- hosts: wordpress_dev
+  vars:
+    wp_mysql_db: MyWP
+    wp_mysql_user: wpUser
+    wp_mysql_password: wpP4ss
+    mysql_root_user: root
+    mysql_root_password: Solinea
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+# all in one WP install
+
+## Setup dependencies
+  tasks:
+    - name: Add repo file
+      template: src=mariadb.list.j2 dest=/etc/apt/sources.list.d/mariadb.list owner=root group=root mode=0644
+      register: mariadb_list
+
+    - name: Add repo key
+      apt_key: id=1BB943DB url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xCBCB082A1BB943DB state=present
+      register: mariadb_key
+
+    - name: Update all packages
+      apt: upgrade=dist update_cache=yes
+
+    - name: Unattended package installation
+      shell: export DEBIAN_FRONTEND=noninteractive
+      changed_when: false
+
+    - name: Install needed packages
+      apt: name={{ item }} state=present update_cache=yes
+      with_items:
+          - vim-nox
+          - apache2
+          - mariadb-server
+          - mariadb-client
+          - php5
+          - php5-mysql
+          - python-mysqldb
+
+    - name: Set root password
+      mysql_user: name="{{ mysql_root_user }}" password="{{ mysql_root_password }}" host="{{ item }}" priv=*.*:ALL,GRANT state=present
+      with_items:
+         - "{{ ansible_hostname }}"
+         - 127.0.0.1
+         - ::1
+         - localhost
+      ignore_errors: true
+
+    - name: Copy ~/.my.cnf to nodes
+      template: src=my.cnf.j2 dest=/root/.my.cnf
+
+    - name: Create MariaDB database
+      mysql_db: name={{ wp_mysql_db }} state=present
+
+    - name: Create MariaDB username and password
+      mysql_user:
+          login_user={{ mysql_root_user }}
+          login_password={{ mysql_root_password }}
+          name={{ wp_mysql_user }}
+          password={{ wp_mysql_password }}
+          priv=*.*:ALL
+
+    - name: Ensure MariaDB is running (and enable it at boot)
+      service: name=mysql state=started enabled=yes
+
+    - name: Create directory to download WordPress
+      command: mkdir -p /opt/source/wordpress
+
+    - name: Download WordPress
+      get_url: url=https://www.wordpress.org/latest.tar.gz dest=/opt/source/wordpress/wordpress.tar.gz validate_certs=no
+
+    - name: Extract WordPress
+      command: "tar xzf /opt/source/wordpress/wordpress.tar.gz -C /var/www/html --strip-components 1"
+
+    - name: Copy config file
+      template: src=wp-config.php dest=/var/www/html/wp-config.php mode=0644
+
+    #Remove index.html so WP loads at default URL
+    - file: path=/var/www/html/index.html state=absent

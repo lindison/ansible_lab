@@ -1,0 +1,10 @@
+---  # Basic Module
+- hosts: physicals
+  user: lindis
+
+  tasks:
+    - name: Check uptime
+      action: chkuptime
+      register: uptime
+
+    - debug: var=uptime

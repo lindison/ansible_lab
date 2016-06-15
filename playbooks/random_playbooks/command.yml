@@ -1,0 +1,12 @@
+--- #Command module example
+- hosts: appservers
+  become: yes
+  become_method: sudo
+  remote_user: vagrant
+  connection: ssh
+  gather_facts: no
+  tasks:
+   - name: Check for Python packages
+     command: /home/vagrant/testing/test.sh
+     args:
+       chdir: /home/vagrant/testing

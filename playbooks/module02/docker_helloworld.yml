@@ -1,0 +1,5 @@
+--- # docker things
+- hosts: docker
+  tasks:
+    - name: run container hello-world
+      docker: name=hello-world image=hello-world state=started 

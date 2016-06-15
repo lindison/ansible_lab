@@ -1,0 +1,14 @@
+--- # Testing the J2 template module
+- hosts: appservers,webservers
+  connection: ssh
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+  vars:
+    userName: test
+    userPassword: password123
+    connectionType: SFTP
+  tasks:
+    - name: Install the configuration file customized for the system
+      template: src=test.conf.j2 dest=/home/vagrant/test.conf owner=vagrant group=vagrant mode=750

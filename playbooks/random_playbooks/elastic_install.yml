@@ -1,0 +1,52 @@
+---
+- hosts: elasticsearch
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  connection: ssh
+  gather_facts: yes
+
+  tasks:
+    - name: Download Elastic DEB Package
+      command: wget https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.0.0.deb
+      when: ansible_os_family == "Debian"
+    
+    - name: Ubuntu -- Install Java
+      apt: pkg=openjdk-7-jre-headless state=latest
+      when: ansible_os_family == "Debian"
+
+    - name: Ubuntu -- Install Elastic Deb
+      command: dpkg -i elasticsearch-2.0.0.deb
+      when: ansible_os_family == "Debian"
+
+    - name: Ubuntu -- start elastic service
+      command: update-rc.d elasticsearch defaults 95 10
+      when: ansible_os_family == "Debian"
+
+    - name: Ubuntu -- Start Elastic Service
+      service: name=elasticsearch state=restarted enabled=yes
+      when: ansible_os_family == "Debian"
+
+    - name: Centos -- Download Elastic RPM Package
+      command: wget https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-2.0.0.rpm
+      when: ansible_os_family == "RedHat"
+    
+    - name: Centos -- Install Java
+      yum: pkg=java state=latest
+      when: ansible_os_family == "RedHat"
+
+    - name: Centos -- Install Elastic RPM
+      command: rpm -i elasticsearch-2.0.0.rpm
+      when: ansible_os_family == "RedHat"
+
+    - name: Centos -- start redhat elastic daemon
+      command: systemctl daemon-reload
+      when: ansible_os_family == "RedHat"
+
+    - name: Centos -- enable elastic search service
+      service: name=elasticsearch.service enabled=yes
+      when: ansible_os_family == "RedHat"
+
+    - name: Centos -- start the elastic search service
+      service: name=elasticsearch.service state=restarted
+      when: ansible_os_family == "RedHat"

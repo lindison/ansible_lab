@@ -1,0 +1,12 @@
+--- # This is a basic playbook for the Ansible 101 course
+- hosts: localhost
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  connection: ssh
+  gather_facts: no
+  
+  tasks: 
+    - name: Install the telnet client
+      apt: pkg=telnet state=latest
+

@@ -1,0 +1,12 @@
+--- # Demonstration of SELinux
+    # link: http://docs.ansible.com/ansible/selinux_module.html
+- hosts: webservers
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  connection: ssh
+  gather_facts: no
+  tasks: 
+   - name: Changing SELinux Configuration to Permissive
+     selinux: policy=targeted state=permissive
+

@@ -1,0 +1,17 @@
+--- # Promt for user package example
+- hosts: appservers
+  user: vagrant
+  become: yes
+  become_method: sudo
+  connection: ssh
+  
+  vars: 
+    playbook_version: 0.01b
+  vars_prompt:
+    - name: pkgtoinstall
+      prompt: install which package?
+      default: telnet
+      private: no
+  tasks:
+    - name: Install the {{ pkgtoinstall }}
+      yum: pkg={{ pkgtoinstall }} state=latest

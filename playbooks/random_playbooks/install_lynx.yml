@@ -1,0 +1,10 @@
+---
+- hosts: development
+  vars:
+  - author_name: test_user
+  vars_files:
+  - vars.yml
+  tasks:
+  - name: install lynx on development servers
+    apt: pkg=lynx state=installed update_cache=true
+

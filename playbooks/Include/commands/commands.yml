@@ -1,0 +1,3 @@
+- name: Make sure Lynx is installed and log it
+  raw: dpkg -l | grep lynx | grep lynx > /home/vagrant/install.log
+

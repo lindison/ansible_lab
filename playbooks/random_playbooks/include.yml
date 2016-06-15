@@ -1,0 +1,13 @@
+--- # this does an include
+- hosts: appservers
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  connection: ssh
+  gather_facts: no
+  
+  tasks:
+    - include: plays/packages.yml
+    - name: Verify the telnet package is installed
+      raw: yum list installed | grep telnet > /home/vagrant/pkgs.log
+

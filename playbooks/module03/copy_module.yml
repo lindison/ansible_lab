@@ -1,0 +1,12 @@
+--- # Copy module example
+- hosts: appservers
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  connection: ssh
+  gather_facts: no
+
+  tasks:
+    - name: Copy from the files directory Playbooks
+      copy: src=/home/vagrant/Playbooks/files/copyfile.txt dest=/home/vagrant/copyfile.txt owner=vagrant group=vagrant mode=0655 backup=yes
+
