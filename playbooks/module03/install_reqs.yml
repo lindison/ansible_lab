@@ -1,7 +1,7 @@
 ---
 # playbook to run several tasks to prepare target systems to install packages
 - hosts: all
-  remote_user: vagrant
+  remote_user: ubuntu
   become: true
   become_method: sudo 
   connection: ssh

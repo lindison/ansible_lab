@@ -2,7 +2,7 @@
     # demonstration of the shell module
     # link: http://docs.ansible.com/ansible/shell_module.html
 - hosts: all
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh
