@@ -1,0 +1,10 @@
+---  # Basic Module
+- hosts: all
+  user: vagrant
+
+  tasks:
+    - name: Check uptime
+      shell: uptime
+      register: uptime
+
+    - debug: var=uptime

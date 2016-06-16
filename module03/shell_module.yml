@@ -1,0 +1,14 @@
+--- 
+    # demonstration of the shell module
+    # link: http://docs.ansible.com/ansible/shell_module.html
+- hosts: all
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  connection: ssh
+  gather_facts: no
+  tasks: 
+   - name: hostname 
+     shell: hostname
+     register: hostname
+   - debug: msg={{ hostname }} 

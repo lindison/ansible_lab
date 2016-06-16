@@ -1,0 +1,6 @@
+- name: Install htop
+  apt: pkg=htpp state=latest update_cache=yes
+  when: "ansible_os_family == 'Debian'"
+  yum: pkg=htop state=latest update_cache=yes
+  when: "ansible_os_family == 'RedHat'"
+  ignore_errors: yes
