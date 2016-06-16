@@ -1,0 +1,14 @@
+--- # Playbook demonstration and use of the authorize_key module
+    # link: http://docs.ansible.com/ansible/authorized_key_module.html
+    # This playbook adds the SSH authorized key for particular user accounts
+
+- hosts: all
+  gather_facts: no
+  remote_user: vagrant
+  connection: ssh
+  tasks:
+
+  - name: install ssh key
+    authorized_key: user=vagrant
+                    key="{{lookup('file', '/home/vagrant/.ssh/id_rsa.pub') }}"
+                    state=present
