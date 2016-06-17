@@ -1,8 +1,0 @@
---- # docker things
-- hosts: docker
-  remote_user: ubuntu
-  gather_facts: no
-  connection: ssh
-  tasks: 
-   - name: start nginx container
-     docker: name=nginx image=nginx state=started

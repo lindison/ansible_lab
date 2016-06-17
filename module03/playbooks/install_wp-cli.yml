@@ -6,11 +6,19 @@
   gather_facts: no
   connection: ssh
   tasks:
+  - name: create the uploads directory
+    file: path=/var/www/html/wp-content/uploads state=directory owner=nobody group=nogroup mode=0755
   - name: Install WordPress CLI 
     get_url: url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar dest=/usr/local/bin/wp owner=ubuntu group=ubuntu mode=0770
   - name: Create .bash directory in home directory
     file: path=/home/ubuntu/.bash state=directory owner=ubuntu group=ubuntu
   - name: Install tab completions
     get_url: url=https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash dest=/home/ubuntu/.bash/wp-completion.bash owner=ubuntu group=ubuntu mode=0770
-  - name: Install Plugin
-    command: wp plugin install hello-dolly --allow-root chdir=/var/www/html/
+  - name: Execute the core install
+    command: wp core install --url='http://192.168.10.150' --title='Ansible101' --admin_user='root' --admin_password='solinea' --admin_email='lindis@solinea.com' chdir=/var/www/html
+    become: yes
+    become_user: ubuntu
+  - name: Create the Ubuntu user
+    command: wp user create ubuntu 'ubuntu@solinea.com' --role='author' --user_pass=solinea chdir=/var/www/html
+    become: yes
+    become_user: ubuntu 
