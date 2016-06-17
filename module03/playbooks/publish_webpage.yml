@@ -1,0 +1,12 @@
+--- # This will publish some webpages to wordpress
+- hosts: wp-dev
+  remote_user: ubuntu
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: Ensure /home/ubuntu/pages is present, if not, create.
+      file: path=/home/ubuntu/pages state=directory
+    - name: Copy from the files directory Playbooks
+      copy: src=/home/ubuntu/pages/webpage.txt dest=/home/ubuntu/pages/webpage.txt owner=ubuntu group=ubuntu mode=0655 backup=yes
+    - name: deploy the Webpage to WordPress
+      command: wp post create /home/ubuntu/pages/webpage.txt --post_type=page --post_title='Ansible published Webpage' --post_status=publish chdir=/var/www/html
