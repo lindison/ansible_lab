@@ -5,7 +5,15 @@
     wp_mysql_user: wpUser
     wp_mysql_password: wpP4ss
     mysql_root_user: root
-    mysql_root_password: Solinea
+    mysql_root_password: Passw0rd
+    wp_url: http://192.168.10.150
+    wp_title: Ansible101
+    wp_root_user: root
+    wp_root_pass: Passw0rd
+    wp_root_email: root@solinea.com
+    wp_author_user: ubuntu
+    wp_author_email: author@solinea.com
+    wp_author_pass: Passw0rd
   remote_user: ubuntu
   become: yes
   become_method: sudo
@@ -79,19 +87,25 @@
 
     #Remove index.html so WP loads at default URL
     - file: path=/var/www/html/index.html state=absent
+
     - name: create the uploads directory
       file: path=/var/www/html/wp-content/uploads state=directory owner=nobody group=nogroup mode=0755
+
     - name: Install WordPress CLI
       get_url: url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar dest=/usr/local/bin/wp owner=ubuntu group=ubuntu mode=0770
+
     - name: Create .bash directory in home directory
       file: path=/home/ubuntu/.bash state=directory owner=ubuntu group=ubuntu
+
     - name: Install tab completions
       get_url: url=https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash dest=/home/ubuntu/.bash/wp-completion.bash owner=ubuntu group=ubuntu mode=0770
-    - name: Execute the core install
-      command: wp core install --url='http://192.168.10.150' --title='Ansible101' --admin_user='root' --admin_password='solinea' --admin_email='lindis@solinea.com' chdir=/var/www/html
+
+    - name: Execute the core install and create the root user
+      command: wp core install --url="{{wp_url}}" --title="{{wp_title}}" --admin_user="{{wp_root_user}}" --admin_password="{{wp_root_pass}}" --admin_email="{{wp_root_email}}" chdir=/var/www/html
       become: yes
       become_user: ubuntu
-    - name: Create the Ubuntu user
-      command: wp user create ubuntu 'ubuntu@solinea.com' --role='author' --user_pass=solinea chdir=/var/www/html
+
+    - name: Create a user with the role of author
+      command: wp user create "{{wp_author_user}}" "{{wp_author_email}}" --role='author' --user_pass="{{wp_author_pass}}" chdir=/var/www/html
       become: yes
       become_user: ubuntu

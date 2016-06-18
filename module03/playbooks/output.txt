@@ -1,0 +1,75 @@
+
+PLAY [wp-dev] ******************************************************************
+
+TASK [setup] *******************************************************************
+ok: [maas01.maas]
+
+TASK [Add repo file] ***********************************************************
+ok: [maas01.maas]
+
+TASK [Add repo key] ************************************************************
+ok: [maas01.maas]
+
+TASK [Update all packages] *****************************************************
+ok: [maas01.maas]
+
+TASK [Unattended package installation] *****************************************
+ok: [maas01.maas]
+
+TASK [Install needed packages] *************************************************
+ok: [maas01.maas] => (item=[u'vim-nox', u'apache2', u'mariadb-server', u'mariadb-client', u'php5', u'php5-mysql', u'python-mysqldb'])
+
+TASK [Set root password] *******************************************************
+ok: [maas01.maas] => (item=maas01)
+ok: [maas01.maas] => (item=127.0.0.1)
+ok: [maas01.maas] => (item=::1)
+ok: [maas01.maas] => (item=localhost)
+
+TASK [Copy ~/.my.cnf to nodes] *************************************************
+ok: [maas01.maas]
+
+TASK [Create MariaDB database] *************************************************
+ok: [maas01.maas]
+
+TASK [Create MariaDB username and password] ************************************
+ok: [maas01.maas]
+
+TASK [Ensure MariaDB is running (and enable it at boot)] ***********************
+ok: [maas01.maas]
+
+TASK [Create directory to download WordPress] **********************************
+changed: [maas01.maas]
+
+TASK [Download WordPress] ******************************************************
+ok: [maas01.maas]
+
+TASK [Extract WordPress] *******************************************************
+changed: [maas01.maas]
+
+TASK [Copy config file] ********************************************************
+ok: [maas01.maas]
+
+TASK [file] ********************************************************************
+ok: [maas01.maas]
+
+TASK [create the uploads directory] ********************************************
+ok: [maas01.maas]
+
+TASK [Install WordPress CLI] ***************************************************
+ok: [maas01.maas]
+
+TASK [Create .bash directory in home directory] ********************************
+ok: [maas01.maas]
+
+TASK [Install tab completions] *************************************************
+ok: [maas01.maas]
+
+TASK [Execute the core install and create the root user] ***********************
+changed: [maas01.maas]
+
+TASK [Create a user with the role of author] ***********************************
+changed: [maas01.maas]
+
+PLAY RECAP *********************************************************************
+maas01.maas                : ok=22   changed=4    unreachable=0    failed=0   
+

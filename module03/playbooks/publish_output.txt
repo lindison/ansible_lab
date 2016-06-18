@@ -1,0 +1,15 @@
+
+PLAY [wp-dev] ******************************************************************
+
+TASK [Ensure /home/ubuntu/pages is present, if not, create.] *******************
+ok: [maas01.maas]
+
+TASK [Copy from the files directory Playbooks] *********************************
+ok: [maas01.maas]
+
+TASK [deploy the Webpage to WordPress] *****************************************
+changed: [maas01.maas]
+
+PLAY RECAP *********************************************************************
+maas01.maas                : ok=3    changed=1    unreachable=0    failed=0   
+
