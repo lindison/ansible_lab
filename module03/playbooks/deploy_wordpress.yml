@@ -6,7 +6,6 @@
     wp_mysql_password: wpP4ss
     mysql_root_user: root
     mysql_root_password: Passw0rd
-    wp_url: http://192.168.10.150
     wp_title: Ansible101
     wp_root_user: root
     wp_root_pass: Passw0rd
@@ -91,6 +90,8 @@
     - name: create the uploads directory
       file: path=/var/www/html/wp-content/uploads state=directory owner=nobody group=nogroup mode=0755
 
+    ## Install and configure the WordPress deployment
+
     - name: Install WordPress CLI
       get_url: url=https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar dest=/usr/local/bin/wp owner=ubuntu group=ubuntu mode=0770
 
@@ -101,7 +102,7 @@
       get_url: url=https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash dest=/home/ubuntu/.bash/wp-completion.bash owner=ubuntu group=ubuntu mode=0770
 
     - name: Execute the core install and create the root user
-      command: wp core install --url="{{wp_url}}" --title="{{wp_title}}" --admin_user="{{wp_root_user}}" --admin_password="{{wp_root_pass}}" --admin_email="{{wp_root_email}}" chdir=/var/www/html
+      command: wp core install --url='http://"{{ansible_ens3.ipv4.address}}"' --title="{{wp_title}}" --admin_user="{{wp_root_user}}" --admin_password="{{wp_root_pass}}" --admin_email="{{wp_root_email}}" chdir=/var/www/html
       become: yes
       become_user: ubuntu
 

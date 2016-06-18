@@ -19,6 +19,6 @@
     become: yes
     become_user: ubuntu
   - name: Create the Ubuntu user
-    command: wp user create ubuntu 'ubuntu@solinea.com' --role='author' --user_pass=solinea chdir=/var/www/html
+    command: wp user create drake 'ubuntu@solinea.com' --role='author' --user_pass=solinea chdir=/var/www/html
     become: yes
     become_user: ubuntu 
