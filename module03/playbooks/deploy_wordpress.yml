@@ -20,6 +20,12 @@
 
 ## Setup dependencies
   tasks:
+    - name: Install git
+      apt: pkg=git state=latest update_cache=true
+
+    - name: Install pip
+      apt: pkg=python-pip state=latest
+
     - name: Add repo file
       template: src=mariadb.list.j2 dest=/etc/apt/sources.list.d/mariadb.list owner=root group=root mode=0644
       register: mariadb_list
@@ -110,3 +116,10 @@
       command: wp user create "{{wp_author_user}}" "{{wp_author_email}}" --role='author' --user_pass="{{wp_author_pass}}" chdir=/var/www/html
       become: yes
       become_user: ubuntu
+
+    - name: add PHP header
+      blockinfile:
+         dest: /var/www/html/wp-content/themes/twentysixteen/header.php
+         insertafter: <div class="site-branding">
+         content: |
+            <p class="site-description"><?php echo "I am hosted by {{ ansible_hostname }} with an IP of {{ ansible_ens3.ipv4.address }}.";?></p>
