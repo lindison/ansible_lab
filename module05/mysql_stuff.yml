@@ -1,0 +1,25 @@
+---
+- hosts: wp-pb-all
+  gather_facts: True
+  vars:
+    wp_mysql_db: MyWP
+    wp_mysql_user: wpUser
+    wp_mysql_password: wpP4ss
+    mysql_root_user: root
+    mysql_root_password: Passw0rd
+- hosts: wp-pb-db
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+# Multi-Tier WP install
+
+## Setup dependencies
+  tasks:
+    - name: Create MariaDB username and password
+      mysql_user:
+          login_user={{ mysql_root_user }}
+          login_password={{ mysql_root_password }}
+          name={{ wp_mysql_user }}
+          host=*
+          password={{ wp_mysql_password }}
+          priv=*.*:ALL
