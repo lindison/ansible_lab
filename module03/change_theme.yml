@@ -4,4 +4,4 @@
   connection: ssh
   tasks:
     - name: change WordPress Theme
-      command: wp theme install bold-headline --allow-root chdir=/var/www/html
+      command: wp theme activate {{ theme }} chdir=/var/www/html

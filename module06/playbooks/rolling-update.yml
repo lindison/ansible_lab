@@ -1,23 +1,23 @@
 --- # This is an example of a rolling update
-- hosts: wordpress-roles
+- hosts: wp-roles-all
   become: yes
   become_method: sudo
-  gather_facts: no
 
   tasks:
 
 # web
 - hosts: web
-  sudo: yes
+  become: yes
+  become_method: sudo 
   vars:
-    # https://github.com/jweissig/episode-47/releases
+    # https://github.com/lindison/rolling
     app_version: release-0.01
   serial: 1
 
   pre_tasks:
 
   - name: disable server in haproxy
-    shell: echo "disable server episode46/{{ inventory_hostname }}" | socat stdio /var/lib/haproxy/stats
+    shell: echo "Updating {{ inventory_hostname }}" | socat stdio /var/lib/haproxy/stats
     delegate_to: "{{ item }}"
     with_items: groups.lb
 
@@ -51,7 +51,7 @@
   post_tasks:
 
   - name: enable server in haproxy
-    shell: echo "enable server episode46/{{ inventory_hostname }}" | socat stdio /var/lib/haproxy/stats
+    shell: echo "Finished updating {{ inventory_hostname }}" | socat stdio /var/lib/haproxy/stats
     delegate_to: "{{ item }}"
     with_items: groups.lb
 

@@ -1,0 +1,17 @@
+--- # This will publish some webpages to wordpress
+- hosts: wp-dev
+  remote_user: ubuntu
+  connection: ssh
+  tasks:
+    - name: add PHP header
+      blockinfile:
+         dest: /var/www/html/wp-content/themes/{{ item }}/header.php
+         with_items:
+          - bluebiz
+          - lifelog
+          - indreams
+          - cannyon
+          - start
+         insertafter: <div class="site-branding">
+         content: |
+            <p class="site-description"><?php echo "I am hosted by {{ ansible_hostname }} with an IP of {{ ansible_ens3.ipv4.address }}.";?></p>

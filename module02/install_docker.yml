@@ -1,6 +1,6 @@
 --- 
 # Install Docker
-- hosts: docker
+- hosts: wp-dev
   remote_user: ubuntu
   become: yes
   become_method: sudo

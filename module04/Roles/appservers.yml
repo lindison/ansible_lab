@@ -1,6 +1,6 @@
 --- # This is the master playbook for appservers
-- hosts: appservers
-  remote_user: vagrant
+- hosts: module04
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh
