@@ -11,6 +11,12 @@
   remote_user: ubuntu
   become: yes
   become_method: sudo
+  vars:
+    wp_mysql_db: MyWP
+    wp_mysql_user: wpUser
+    wp_mysql_password: wpP4ss
+    mysql_root_user: root
+    mysql_root_password: Passw0rd
 # Multi-Tier WP install
 
 ## Setup dependencies
@@ -23,8 +29,8 @@
       apt_key: id=1BB943DB url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xCBCB082A1BB943DB state=present
       register: mariadb_key
 
-#    - name: Update all packages
-#      apt: upgrade=dist update_cache=yes
+    - name: Update all packages
+      apt: upgrade=dist update_cache=yes
 
     - name: Unattended package installation
       shell: export DEBIAN_FRONTEND=noninteractive
@@ -44,28 +50,36 @@
     - name: Enable remote MySQL access
       lineinfile: dest=/etc/mysql/my.cnf regexp="^bind-address" line="bind-address = 0.0.0.0"
 
-    - name: Set root password
-      mysql_user: name="{{ mysql_root_user }}" password="{{ mysql_root_password }}" host=* priv=*.*:ALL,GRANT state=present
-      with_items:
-         - maas02.maas
-         - 192.168.10.151
-         - 127.0.0.1
-         - ::1
-         - localhost
-      ignore_errors: true
+ #   - name: Set MariaDB Root Password
+ #     command: mysqladmin -u root PASSWORD Passw0rd
 
+ #   - name: Create Remote user account
+ #     shell: mysql -u root -p'Passw0rd' -e "CREATE USER 'root'@'192.168.10.151' IDENTIFIED BY 'Passw0rd';"
+
+ #   - name: Provide Privileges 
+ #     shell: mysql -u root -p'Passw0rd' -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.10.151';"
+
+ #   - name: Flush Privileges
+ #     shell: mysql -u root -p'Passw0rd' -e "FLUSH PRIVILEGES;"
+
+#    - name: Set root password
+#      mysql_user: name=root password=Passw0rd host=* priv=*.*:ALL,GRANT state=present
+#      ignore_errors: true
+#    - name: Set access for remote host
+#      mysql_user: name=root password=Passw0rd host=192.168.10.151 priv=*.*:ALL,GRANT state=present
+#"
     - name: Copy ~/.my.cnf to nodes
       template: src=my.cnf.j2 dest=/root/.my.cnf
-
+#
     - name: Create MariaDB database
       mysql_db: name={{ wp_mysql_db }} state=present
-
+#
     - name: Create MariaDB username and password
       mysql_user:
           login_user={{ mysql_root_user }}
           login_password={{ mysql_root_password }}
           name={{ wp_mysql_user }}
-          host=192.168.10.151
+          host={{ hostvars['maas02.maas']['ansible_ens3']['ipv4']['address'] }}
           password={{ wp_mysql_password }}
           priv=*.*:ALL
 
@@ -77,6 +91,11 @@
   become: yes
   become_method: sudo
   vars:
+    wp_mysql_db: MyWP
+    wp_mysql_user: wpUser
+    wp_mysql_password: wpP4ss
+    mysql_root_user: root
+    mysql_root_password: Passw0rd
     wp_title: Ansible101
     wp_root_user: root
     wp_root_pass: Passw0rd
@@ -132,37 +151,22 @@
 
       when: wordpress_is_downloaded.stat.exists == False
 
-    - name: Configure WordPress
-      shell: /usr/local/bin/wp core config --allow-root
-                --path=/var/www/html
-                --dbhost="192.168.10.152"
-                --dbname="{{ wp_mysql_db }}"
-                --dbuser="{{ wp_mysql_user }}"
-                --dbpass="{{ wp_mysql_password }}"
-      when: wordpress_is_downloaded.stat.exists == False
-
-#    - name: Is WordPress installed?
-#      shell: /usr/local/bin/wp core is-installed --allow-root
-#      args:
-#        chdir: /var/www/html/
-#      register: wordpress_is_installed
-#      ignore_errors: True
-
-#    - name: Install WordPress tables
-#      become: yes 
-#      become_method: sudo
-#      shell: /usr/local/bin/wp core install --allow-root
+#    - name: Configure WordPress
+#      shell: /usr/local/bin/wp core config --allow-root
 #                --path=/var/www/html
-#                --url="http://wp.smithss.org"
-#                --title="Solinea Ansible"
-#                --admin_user="admin"
-#                --admin_password="Solinea"
-#                --admin_email="jason@solinea.com"
-#      when: wordpress_is_installed|failed
-
-    #Remove index.html so WP loads at default URL
-    - file: path=/var/www/html/index.html state=absent
+#                --dbhost="{{ hostvars['maas06.maas']['ansible_ens3']['ipv4']['address'] }}"
+#                --dbname="{{ wp_mysql_db }}"
+#                --dbuser="{{ wp_mysql_user }}"
+#                --dbpass="{{ wp_mysql_password }}"
+#      become: yes
+#      become_user: ubuntu
+#      when: wordpress_is_downloaded.stat.exists == False
+# "hello" 
     ## Install and configure the WordPress deployment
+    - name: Configure WordPress
+      command: wp core config --path=/var/www/html --dbhost=maas03.maas  --dbname=MyWP   --dbuser=root  --dbpass=Passw0rd --allow-root
+    - name: Remove index.html so WP loads at default URL
+      file: path=/var/www/html/index.html state=absent
 
     - name: Execute the core install and create the root user
       command: wp core install --url='http://"{{ansible_ens3.ipv4.address}}"' --title="{{wp_title}}" --admin_user="{{wp_root_user}}" --admin_password="{{wp_root_pass}}" --admin_email="{{wp_root_email}}" chdir=/var/www/html

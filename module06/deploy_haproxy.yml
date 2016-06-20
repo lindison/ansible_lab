@@ -1,0 +1,17 @@
+---
+
+# web
+- hosts: wp-ro-all
+  become: yes
+  become_method: sudo
+
+#  roles:
+#    - web
+
+# lb
+- hosts: wp-ro-lb
+  become: yes
+  become_method: sudo
+
+  roles:
+    - lb

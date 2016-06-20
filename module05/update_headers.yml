@@ -1,5 +1,5 @@
 --- # This will publish some webpages to wordpress
-- hosts: wp-pb-ap
+- hosts: wp-ro-ha
   remote_user: ubuntu
   become: yes
   become_method: sudo

@@ -60,7 +60,7 @@
     - name: Configure WordPress
       shell: /usr/local/bin/wp core config --allow-root
                 --path=/var/www/html
-                --dbhost="192.168.10.152"
+                --dbhost="192.168.10.156"
                 --dbname="{{ wp_mysql_db }}"
                 --dbuser="{{ mysql_root_user }}"
                 --dbpass="{{ mysql_root_password }}"

@@ -1,9 +1,0 @@
---- ## Gather facts from WPaaS presentation servers and configure HAProxy for RoundRobin
-- hosts: web
-
-- hosts: lb
-  become: yes
-  become_method: sudo
-
-  roles:
-    - lb

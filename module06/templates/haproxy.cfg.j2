@@ -35,11 +35,11 @@ defaults
     stats uri /haproxy?stats
 
 backend app
-    {% for host in groups['lb'] %}
+    {% for host in groups['wp-ro-lb'] %}
        listen episode46 {{ hostvars[host]['ansible_ens3']['ipv4']['address'] }}:80
     {% endfor %}
     balance     roundrobin
-    {% for host in groups['web'] %}
+    {% for host in groups['wp-ro-all'] %}
         server {{ host }} {{ hostvars[host]['ansible_ens3']['ipv4']['address'] }} check port 80
     {% endfor %}
 

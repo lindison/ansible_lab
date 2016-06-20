@@ -13,7 +13,7 @@
     wp_author_user: ubuntu
     wp_author_email: author@solinea.com
     wp_author_pass: Passw0rd
-  remote_user: root
+  remote_user: ubuntu
   become: yes
   become_method: sudo
 # all in one WP install

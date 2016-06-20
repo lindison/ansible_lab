@@ -1,25 +1,21 @@
 ---
-- hosts: wp-pb-all
-  gather_facts: True
+- hosts: wp-pb-db
+  become: yes
+  become_method: sudo
+  connection: ssh 
   vars:
     wp_mysql_db: MyWP
     wp_mysql_user: wpUser
     wp_mysql_password: wpP4ss
     mysql_root_user: root
     mysql_root_password: Passw0rd
-- hosts: wp-pb-db
-  remote_user: ubuntu
-  become: yes
-  become_method: sudo
-# Multi-Tier WP install
-
-## Setup dependencies
   tasks:
-    - name: Create MariaDB username and password
-      mysql_user:
-          login_user={{ mysql_root_user }}
-          login_password={{ mysql_root_password }}
-          name={{ wp_mysql_user }}
-          host=*
-          password={{ wp_mysql_password }}
-          priv=*.*:ALL
+    - name: Create Remote user account
+      shell: mysql -u root -p'Passw0rd' -e "CREATE USER 'root'@'192.168.10.153' IDENTIFIED BY 'Passw0rd';"
+
+    - name: Provide Privileges
+      shell: mysql -u root -p'Passw0rd' -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.10.153';"
+
+    - name: Flush Privileges
+      shell: mysql -u root -p'Passw0rd' -e "FLUSH PRIVILEGES;"
+

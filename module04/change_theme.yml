@@ -1,0 +1,7 @@
+--- # This will publish some webpages to wordpress
+- hosts: wp-pb-ap
+  remote_user: ubuntu
+  connection: ssh
+  tasks:
+    - name: change WordPress Theme
+      command: wp theme activate {{ theme }} chdir=/var/www/html
