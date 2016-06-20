@@ -9,7 +9,7 @@
     mysql_root_password: Solinea
 
 - hosts: wordpress_db
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
 # Multi-Tier WP install
@@ -74,7 +74,7 @@
       service: name=mysql state=restarted enabled=yes
 
 - hosts: wordpress-app
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
 

@@ -1,6 +1,6 @@
 --- # error handling example
 - hosts: appservers
-  user: vagrant
+  user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh

@@ -6,9 +6,9 @@
   connection: ssh
   pre_tasks: 
   - name: when did the role start to run
-    raw: date > /home/vagrant/startofrole.log
+    raw: date > /home/ubuntu/startofrole.log
   roles: 
     - appservers
   post_tasks:
   - name: when did the role stop running
-    raw: date > /home/vagrant/stopofrole.log
+    raw: date > /home/ubuntu/stopofrole.log

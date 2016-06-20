@@ -1,11 +1,11 @@
 ---
 # this is a playbook to fetch the /etc/hosts and put it in a hostname directory on acs
 - hosts: all
-  remote_user: vagrant
+  remote_user: ubuntu
   become: true
   become_method: sudo
   connection: ssh
   
   tasks: 
   - name: fetch /etc/hosts and place it in acs ~/tmp/ directory
-    fetch: src=/etc/hosts dest=/home/vagrant/tmp/hosts-{{ ansible_hostname }} flat=yes
+    fetch: src=/etc/hosts dest=/home/ubuntu/tmp/hosts-{{ ansible_hostname }} flat=yes

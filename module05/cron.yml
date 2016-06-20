@@ -1,6 +1,6 @@
 --- # Cron module example
 - hosts: appservers
-  remote_user: vagrant
+  remote_user: ubuntu
   connection: ssh
   gather_facts: no
   tasks:

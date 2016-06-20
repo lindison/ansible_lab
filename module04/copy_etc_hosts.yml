@@ -1,7 +1,7 @@
 ---
 # this playbook copies /etc/hosts from acs and places it in remote ~
 - hosts: all
-  remote_user: vagrant
+  remote_user: ubuntu
   become: true
   become_method: sudo
   connection: ssh
@@ -9,5 +9,5 @@
  
   tasks:
   - name: copy /etc/hosts file from acs to remote machines
-    copy: src=/etc/hosts dest=/home/vagrant/tmp owner=vagrant group=vagrant mode=0644
+    copy: src=/etc/hosts dest=/home/ubuntu/tmp owner=ubuntu group=ubuntu mode=0644
 

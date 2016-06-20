@@ -3,7 +3,7 @@
   gather_facts: True
 
 - hosts: db 
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   vars:
@@ -18,7 +18,7 @@
 
 
 - hosts: web
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   gather_facts: False

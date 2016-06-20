@@ -1,6 +1,6 @@
 --- # Install Docker
 - hosts: docker
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh
@@ -26,5 +26,5 @@
     - name: Start Docker Service
       service: name=docker state=started
     - name: add user to docker group
-      user: name=vagrant group=docker append=yes
+      user: name=ubuntu group=docker append=yes
 

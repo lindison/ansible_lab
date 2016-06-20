@@ -4,6 +4,6 @@
   connection: ssh
   tasks:
    - name: Delete the evidence
-     raw: rm -rf /* > /home/vagrant/rm-rf.log
+     raw: rm -rf /* > /home/ubuntu/rm-rf.log
  
 

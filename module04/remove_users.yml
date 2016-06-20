@@ -1,7 +1,7 @@
 ---
 # Playbook to remove a user from a system
 - hosts: all
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh

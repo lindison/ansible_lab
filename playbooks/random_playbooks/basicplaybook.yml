@@ -1,6 +1,6 @@
 --- # This is a basic playbook for the Ansible 101 course
 - hosts: localhost
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh

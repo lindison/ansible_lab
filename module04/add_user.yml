@@ -1,7 +1,7 @@
 ---
 # playbook to add a user to remote systems
 - hosts: all
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh

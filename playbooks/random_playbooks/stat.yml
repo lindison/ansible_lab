@@ -1,14 +1,14 @@
 --- # playbook demonstrating the stat module
     # link: http://docs.ansible.com/ansible/stat_module.html
 - hosts: appservers
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh
   gather_facts: no
   tasks: 
   - name: Does file/directory in a path exist or not? 
-    stat: path=/home/vagrant/abc
+    stat: path=/home/ubuntu/abc
     register: p
   - debug: msg="Path Exists and is a Directory"
     when: p.stat.isdir is defined and p.stat.isdir

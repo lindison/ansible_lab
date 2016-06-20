@@ -1,6 +1,6 @@
 ---  # Basic Module
 - hosts: all
-  user: vagrant
+  user: ubuntu
 
   tasks:
     - name: Check uptime

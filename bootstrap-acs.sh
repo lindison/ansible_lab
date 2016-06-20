@@ -11,11 +11,11 @@ apt-get -y install python-passlib
 # route add default gw 192.168.1.1
 
 
-# copy examples into /home/vagrant (from inside the mgmt node)
-cp -a /vagrant/* /home/vagrant
-chown -R vagrant:vagrant /home/vagrant
+# copy examples into /home/ubuntu (from inside the mgmt node)
+cp -a /ubuntu/* /home/ubuntu
+chown -R ubuntu:ubuntu /home/ubuntu
 mv /etc/ansible/hosts /etc/ansible/hosts.orig
-cp /vagrant/hosts /etc/ansible/hosts
+cp /ubuntu/hosts /etc/ansible/hosts
 
 # setup /etc/ansible/ansible.cfg
 
@@ -30,7 +30,7 @@ EOL
 
 cat >> /etc/hosts <<EOL
 
-# vagrant environment nodes
+# ubuntu environment nodes
 
 192.168.1.131 lb01
 192.168.1.141 web01

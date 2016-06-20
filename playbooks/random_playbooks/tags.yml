@@ -1,6 +1,6 @@
 --- # Tag functionality example
 - hosts: appservers
-  user: vagrant
+  user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh
@@ -14,7 +14,7 @@
       tags:
         - packages 
     - name: Verify telnet is installed
-      raw: yum list installed | grep telnet > /home/vagrant/pkg.log
+      raw: yum list installed | grep telnet > /home/ubuntu/pkg.log
       tags:
         - always
 

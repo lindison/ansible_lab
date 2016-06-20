@@ -1,5 +1,5 @@
 - webservers
-- vagrant user
+- ubuntu user
 - sudo rights
 
 - date/time stamp for when the playbook starts

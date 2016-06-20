@@ -1,6 +1,6 @@
 --- # Start AT Playbook example
 - hosts: appservers
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh
@@ -12,7 +12,7 @@
   - name: Install Lynx
     yum: pkg=lynx state=latest
   - name: List Home
-    command: ls -al /home/vagrant
+    command: ls -al /home/ubuntu
     register: result
   - debug: var=result
 

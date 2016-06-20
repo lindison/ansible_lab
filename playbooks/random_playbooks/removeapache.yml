@@ -1,6 +1,6 @@
 --- # Remove Apache2 WebServer from everything
 - hosts: all
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh

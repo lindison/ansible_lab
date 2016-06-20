@@ -1,6 +1,6 @@
 --- #query set fact from setfact.yml
 - hosts: appservers
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method:
   connection: ssh

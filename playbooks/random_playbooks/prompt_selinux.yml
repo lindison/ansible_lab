@@ -2,7 +2,7 @@
     # http://docs.ansible.com/ansible/selinux_module.html
     # http://docs.ansible.com/ansible/playbooks_prompts.html
 - hosts: appservers
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh

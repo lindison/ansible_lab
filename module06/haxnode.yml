@@ -1,5 +1,4 @@
 ---
-- hosts: all
 - hosts: wp-pb-db
   become: yes
   become_method: sudo
@@ -14,10 +13,16 @@
     - name: Create Remote user account
       shell: mysql -u root -p'Passw0rd' -e "CREATE USER 'root'@'{{ item }}' IDENTIFIED BY 'Passw0rd';"
       with_items:
-        - "{{ hostvars[group['haxnode'][0]['ansible_ens3']['ipv4']['address'] }}"
+        - 192.168.10.156
+        - 192.168.10.157
+        - 192.168.10.160
 
     - name: Provide Privileges
-      shell: mysql -u root -p'Passw0rd' -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'{{ansible_ens3.ipv4.address}}';"
+      shell: mysql -u root -p'Passw0rd' -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'{{ item }}';"
+      with_items:
+        - 192.168.10.156
+        - 192.168.10.157
+        - 192.168.10.160
 
     - name: Flush Privileges
       shell: mysql -u root -p'Passw0rd' -e "FLUSH PRIVILEGES;"

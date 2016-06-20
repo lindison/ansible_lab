@@ -1,6 +1,6 @@
 --- # Apache2 module playbook
 - hosts: webservers
-  remote_user: vagrant
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh
