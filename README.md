@@ -2,9 +2,29 @@
 
 These playbooks will build out a WordPress deployment. This requires five virtual machines. 
 
-Ansible can run off the development machine (wp-dev) or locally, assuming network is configured. 
+Ansible can run off the development machine (wp-dev) or locally, assuming network is propoerly configured. 
 
- 
+These playbooks require the following:
+
+[wp-dev]
+1 host
+
+[wp-pb-ap]
+1 host
+
+[wp-pb-db]
+1 host
+
+[wp-ro-all]
+1 host
+
+[wp-ro-ap]
+1 host
+
+[wp-pb-all]
+wp-pb-ap
+wp-pb-db
+
 
 To update the remote_user and home directories, you can run this:
 
