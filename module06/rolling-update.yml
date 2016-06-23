@@ -39,7 +39,7 @@
     file: path=/usr/share/nginx/html/ state=absent
 
   - name: deploy website content
-    git: repo=https://github.com/jweissig/episode-47.git
+    git: repo=https://github.com/lindison/wp-page.git
          dest=/usr/share/nginx/html/
          version={{ app_version }}
 
