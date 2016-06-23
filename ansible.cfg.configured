@@ -1,6 +1,0 @@
-
-[defaults]
-
-forks          = 10
-remote_port    = 22
-
