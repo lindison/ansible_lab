@@ -1,0 +1,6 @@
+---
+- hosts: localhost
+  tasks:
+   - name: run load balance test
+     shell: ab -n {{ test }} -c 10 http://192.168.10.154:80/
+
