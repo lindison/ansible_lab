@@ -35,4 +35,4 @@ On a single directory:
 	grep -r 'ubuntu' ./ | xargs sed -i 's/ubuntu/ubuntu/g' 
 
 On current and all subdirectories:
-	grep -R ubuntu * | xargs sed -i 's/ubuntu/ubuntu/g'
+	grep -R ubuntu ./* | xargs sed -i 's/ubuntu/ubuntu/g'
