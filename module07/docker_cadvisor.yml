@@ -1,0 +1,23 @@
+--- # docker things
+- hosts: wp-dev
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  gather_facts: no
+  connection: ssh
+  tasks: 
+   - name: start cadvisor container
+     docker:
+          name: cadvisor
+          image: google/cadvisor:latest
+          ports:
+          - "8080:8080"
+          volumes:
+          - /:/rootfs:ro
+          - /var/run:/var/run:rw
+          - /sys:/sys:ro
+          - /var/lib/docker/:/var/lib/docker:ro
+          privileged: yes
+          state: started
+
+#docker run --detach=true --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=8080:8080 --privileged=true --name=cadvisor google/cadvisor:latest
