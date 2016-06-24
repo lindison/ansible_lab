@@ -1,0 +1,13 @@
+---
+- hosts: ha
+  become: yes
+  become_method: sudo
+  connection: ssh
+  gather_facts: yes
+  vars:
+    playbook_version: 0.1
+  tasks:
+    - name: local variable display
+      set_fact:
+        singlefact: "{{ansible_ens3.ipv4.address}}"
+    - debug: msg={{ singlefact }}
