@@ -1,5 +1,5 @@
 --- # This is an example of a rolling update
-- hosts: production
+- hosts: wp-ro-all
   become: yes
   become_method: sudo
 
@@ -23,40 +23,31 @@
 
   tasks:
 
-  - name: install nginx
-    action: apt name=nginx state=installed
-
-  - name: write our nginx.conf
-    action: template src=templates/nginx.conf.j2 dest=/etc/nginx/nginx.conf
-    notify: restart nginx
-
-  - name: write our /etc/nginx/sites-available/default
-    action: template src=templates/default-site.j2 dest=/etc/nginx/sites-available/default
-    notify: restart nginx
-
-  - name: clean existing website content
-    #shell: rm -f /usr/share/nginx/html/*
-    file: path=/usr/share/nginx/html/ state=absent
+  - name: Check for and install WordPress Update
+    shell: wp core update --allow-root chdir=/var/www/html/
+    notify: restart apache2
 
   - name: deploy website content
-    git: repo=https://github.com/lindison/wp-page.git
-         dest=/usr/share/nginx/html/
-#         version={{ app_version }}
+    git: repo=https://github.com/lindison/wp_page.git dest=/home/ubuntu/wp_page/ clone=yes
+
+  - name: deploy the Webpage to WordPress
+    command: wp post update /home/ubuntu/wp_page/content.txt --post_type=page --post_title='Ansible published Webpage' 1 chdir=/var/www/html --allow-root
 
   handlers:
 
-  - name: restart nginx
-    action: service name=nginx state=restarted
+  - name: restart apache2
+    action: service name=apache2 state=restarted
 
   post_tasks:
 
   - name: enable server in haproxy
     shell: echo "Finished updating {{ inventory_hostname }}" | socat stdio /var/lib/haproxy/stats
     delegate_to: "{{ item }}"
-    with_items: ('{{groups.lb}}')
+    with_items: '{{groups.lb}}'
 
 # lb
-- hosts: lb
+- hosts: production
+- hosts: wp-ro-lb
   become: yes
   become_method: sudo 
 
