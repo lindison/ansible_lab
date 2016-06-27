@@ -1,0 +1,47 @@
+--- # Install Nagio
+- hosts: nagios
+  become: yes
+  become_method: sudo
+  connection: ssh
+  vars:
+     nagios_version: 4.1.1
+  tasks:
+   - name: Check for Nagios user
+   - name: Check for nagcmd group
+   - name: Check if Nagios user is in nagcmd group
+   - name: Update apt cache
+     apt: update_cache=yes
+
+   - name: Install Depedencies
+     apt: pgk={{ item }} state=latest
+     with_items:
+         - build-essential
+         - libgd2-xpm-dev
+         - openssl
+         - libssl-dev
+         - xinetd
+         - apache2-utils
+         - unzip
+         - apache2
+gcc
+make
+binutils
+cpp
+libpq-dev
+libmysqlclient-dev
+libssl1.0.0
+libssl-dev
+pkg-config
+libgd-tools
+perl
+libperl-dev
+libnet-snmp-perl
+snmp
+apache2
+libapache2-mod-php5
+
+   - name: Download nagios bits
+     get_url: src=https://assets.nagios.com/downloads/nagioscore/releases/nagios-{{ nagios_version }}.tar.gz dest=~ mode=0660
+   - name: Unpack bits
+     unarchive: src=/tmp/nagios-{{ nagios_version }}.tar.gz dest=
+
