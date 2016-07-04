@@ -1,12 +1,13 @@
 ---
-- hosts: wp-pb-db
+- hosts: db
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh 
   vars:
     wp_mysql_db: MyWP
-    wp_mysql_user: wpUser
-    wp_mysql_password: wpP4ss
+    wp_mysql_user: root
+    wp_mysql_password: Passw0rd
     mysql_root_user: root
     mysql_root_password: Passw0rd
   tasks:
@@ -43,13 +44,20 @@
       command: mysqladmin -u root PASSWORD Passw0rd
 
     - name: Create Remote user account
-      shell: mysql -u root -p'Passw0rd' -e "CREATE USER 'root'@'192.168.10.151' IDENTIFIED BY 'Passw0rd';"
+#      shell: mysql -u root -p'Passw0rd' -e "CREATE USER 'root'@'192.168.10.151' IDENTIFIED BY 'Passw0rd';"
+      mysql_user:
+       login_user={{ mysql_root_user }}
+       login_password={{ mysql_root_password }}
+       name={{wp_mysql_user}}
+       host=ubuntu02
+       password={{ wp_mysql_password }}
+       priv=*.*:ALL
 
-    - name: Provide Privileges
-      shell: mysql -u root -p'Passw0rd' -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.10.151';"
-
-    - name: Flush Privileges
-      shell: mysql -u root -p'Passw0rd' -e "FLUSH PRIVILEGES;"
+#    - name: Provide Privileges
+#      shell: mysql -u root -p'Passw0rd' -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.10.151';"
+#
+#    - name: Flush Privileges
+#      shell: mysql -u root -p'Passw0rd' -e "FLUSH PRIVILEGES;"
 
     - name: Copy ~/.my.cnf to nodes
       template: src=my.cnf.j2 dest=/root/.my.cnf
@@ -69,7 +77,7 @@
     - name: Ensure MariaDB is running (and enable it at boot)
       service: name=mysql state=restarted enabled=yes
 
-- hosts: wp-pb-ap
+- hosts: app
   remote_user: ubuntu
   become: yes
   become_method: sudo
@@ -134,12 +142,12 @@
 
       when: wordpress_is_downloaded.stat.exists == False
     - name: Configure WordPress
-      command: wp core config --path=/var/www/html --dbhost=maas03.maas  --dbname=MyWP   --dbuser=root  --dbpass=Passw0rd --allow-root
+      command: wp core config --path=/var/www/html --dbhost=ubuntu03  --dbname=MyWP   --dbuser=root  --dbpass=Passw0rd --allow-root
     - name: Remove index.html so WP loads at default URL
       file: path=/var/www/html/index.html state=absent
 
     - name: Execute the core install and create the root user
-      command: wp core install --url='http://"{{ansible_ens3.ipv4.address}}"' --title="{{wp_title}}" --admin_user="{{wp_root_user}}" --admin_password="{{wp_root_pass}}" --admin_email="{{wp_root_email}}" chdir=/var/www/html
+      command: wp core install --url='http://"{{ansible_eth0.ipv4.address}}"' --title="{{wp_title}}" --admin_user="{{wp_root_user}}" --admin_password="{{wp_root_pass}}" --admin_email="{{wp_root_email}}" chdir=/var/www/html
       become: yes
       become_user: ubuntu
 
@@ -153,5 +161,5 @@
          dest: /var/www/html/wp-content/themes/twentysixteen/header.php
          insertafter: <div class="site-branding">
          content: |
-            <p class="site-description"><?php echo "I am hosted by {{ ansible_hostname }} with an IP of {{ ansible_ens3.ipv4.address }}.";?></p>
+            <p class="site-description"><?php echo "I am hosted by {{ ansible_hostname }} with an IP of {{ ansible_eth0.ipv4.address }}.";?></p>
 
