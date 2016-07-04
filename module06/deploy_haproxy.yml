@@ -1,7 +1,8 @@
 ---
 
 # web
-- hosts: wp-ro-all
+- hosts: wp-all
+  remote_user: ubuntu
   become: yes
   become_method: sudo
 
@@ -9,7 +10,8 @@
 #    - web
 
 # lb
-- hosts: wp-ro-lb
+- hosts: haproxy
+  remote_user: ubuntu
   become: yes
   become_method: sudo
 

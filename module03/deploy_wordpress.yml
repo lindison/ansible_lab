@@ -1,5 +1,5 @@
 ---
-- hosts: wp-dev
+- hosts: dev
   vars:
     wp_mysql_db: MyWP
     wp_mysql_user: wpUser
@@ -108,7 +108,7 @@
       get_url: url=https://raw.githubusercontent.com/wp-cli/wp-cli/master/utils/wp-completion.bash dest=/home/ubuntu/.bash/wp-completion.bash owner=ubuntu group=ubuntu mode=0770
 
     - name: Execute the core install and create the root user
-      command: wp core install --url='http://"{{ansible_ens3.ipv4.address}}"' --title="{{wp_title}}" --admin_user="{{wp_root_user}}" --admin_password="{{wp_root_pass}}" --admin_email="{{wp_root_email}}" chdir=/var/www/html
+      command: wp core install --url='http://"{{ansible_eth0.ipv4.address}}"' --title="{{wp_title}}" --admin_user="{{wp_root_user}}" --admin_password="{{wp_root_pass}}" --admin_email="{{wp_root_email}}" chdir=/var/www/html
       become: yes
       become_user: ubuntu
 
@@ -122,4 +122,4 @@
          dest: /var/www/html/wp-content/themes/twentysixteen/header.php
          insertafter: <div class="site-branding">
          content: |
-            <p class="site-description"><?php echo "I am hosted by {{ ansible_hostname }} with an IP of {{ ansible_ens3.ipv4.address }}.";?></p>
+            <p class="site-description"><?php echo "I am hosted by {{ ansible_hostname }} with an IP of {{ ansible_eth0.ipv4.address }}.";?></p>
