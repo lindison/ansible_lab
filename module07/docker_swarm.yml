@@ -1,0 +1,16 @@
+--- # docker things
+- hosts: docker
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  gather_facts: no
+  connection: ssh
+  tasks: 
+   - name: Create Swarm
+     shell: docker run --rm swarm create
+   
+   - name: Install the Discovery Backend
+     shell: docker run --restart=always -d -p 8500:8500 --name=consul progrium/consul -server -bootstrap
+
+   - name: Install the Swarm Manager
+     shell: docker run --restart=always -d -p 4000:4000 swarm manage -H :4000 --replication --advertise {{ansible_eth0.ipv4.address}}:4000 consul://{{ansible_eth0.ipv4.address}}:8500

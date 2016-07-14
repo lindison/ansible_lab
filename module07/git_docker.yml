@@ -1,0 +1,15 @@
+--- # Install git repo for docker
+- hosts: docker
+  remote_user: ubuntu
+  connection: ssh
+  gather_facts: no
+  tasks:
+   - name: Install git
+     apt: pkg=git state=latest update_cache=yes
+     become: yes
+     become_method: sudo  
+
+   - name: Clone WPaaS WordPress repo 
+     git: repo=https://github.com/lindison/docker_wordpress.git dest=~/git clone=yes
+     become: yes
+     become_user: ubuntu
