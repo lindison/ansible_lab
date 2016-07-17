@@ -22,7 +22,7 @@
     - name: Create docker.list file
       raw: touch /etc/apt/sources.list.d/docker.list
     - name: Add repo
-      raw: echo 'deb https://apt.dockerproject.org/repo ubuntu-{{ansible_lsb.codename}} main' > /etc/apt/sources.list.d/docker.list
+      raw: echo 'deb https://apt.dockerproject.org/repo ubuntu-{{ansible_lsb.codename}} experimental' > /etc/apt/sources.list.d/docker.list
     - name: Install Docker Engine
       apt: pkg=docker-engine state=latest update_cache=true
     - name: Start Docker Service
