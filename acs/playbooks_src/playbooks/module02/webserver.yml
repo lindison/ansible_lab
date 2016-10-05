@@ -1,0 +1,44 @@
+--- # Outline to playbook transation
+- hosts: appservers
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  gather_facts: no
+
+  tasks:  
+  - name: date/time stamp for when the playbook starts
+    command: /usr/bin/date
+    register: timestamp_start
+  - debug: var=timestamp_start
+
+  - name: install apache webserver
+    action: yum name=httpd state=latest
+    notify: enable httpd
+    notify: start httpd
+
+  - name: verify that the webservice is running
+    command: systemctl status httpd
+    register: result
+  - debug: var=result
+
+  - name: install telnet software
+    action: yum name=telnet state=latest
+ 
+  - name: install lynx
+    action: yum name=lynx state=latest
+
+  - name: log all packages installed on system
+    command: yum list installed
+    register: installed_result
+  - debug: var=installed_result
+
+  - name: date/time stamp for when the playbook ends
+    command: /usr/bin/date
+    register: timestamp_stop
+  - debug: var=timestamp_stop
+
+  handlers:
+  - name: enable httpd
+    command: systemctl enable httpd
+  - name: start httpd
+    action: service name=httpd state=restarted

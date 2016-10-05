@@ -1,0 +1,13 @@
+wp_mysql_db: MyWP
+wp_mysql_user: wpUser
+wp_mysql_password: wpP4ss
+mysql_root_user: root
+mysql_root_password: Passw0rd
+wp_title: Ansible101
+wp_root_user: root
+wp_root_pass: Passw0rd
+wp_root_email: root@solinea.com
+wp_author_user: ubuntu
+wp_author_email: author@solinea.com
+wp_author_pass: Passw0rd
+wp-pb-ap: 192.168.10.151

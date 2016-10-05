@@ -1,0 +1,9 @@
+--- # Cron module example
+- hosts: appservers
+  remote_user: ubuntu
+  connection: ssh
+  gather_facts: no
+  tasks:
+    - name: add a cron job to the test user
+      cron: name="list files" state=absent
+

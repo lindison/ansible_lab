@@ -1,0 +1,29 @@
+--- # Playbook demonstration and use of the authorize_key module
+    # link: http://docs.ansible.com/ansible/authorized_key_module.html
+    # link: http://docs.ansible.com/ansible/debug_module.html
+    # This playbook adds the SSH authorized key for particular user accounts
+
+- hosts: all
+  gather_facts: no
+  remote_user: ubuntu
+  connection: ssh
+  vars_prompt:
+   - name: "ssh_key_state"
+     prompt: "ssh key state? 'absent' or 'present'?"
+     private: no
+     register: ssh_key_state
+   - name: "ssh_user"
+     prompt: "Which remote user?"
+     private: no
+     register: ssh_user
+   - name: "ssh_user_pass"
+     prompt: "remote user's password?"
+     private: yes
+     encrypt: "sha512_crypt"
+     confirm: yes
+     salt_size: 7
+  tasks:
+  - name: Setting ssh_key to state '{{ssh_key_state}}' for user '{{ssh_user}}'.
+    authorized_key: user={{ ssh_user }}
+                    key="{{lookup('file', '/home/ubuntu/.ssh/id_rsa.pub') }}"
+                    state={{ ssh_key_state }}

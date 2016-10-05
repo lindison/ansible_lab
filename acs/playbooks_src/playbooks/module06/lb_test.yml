@@ -1,0 +1,14 @@
+--- #Cheeck if ab is installed and run a test using 
+    #test variable defined by user using -e
+- hosts: 127.0.0.1 
+  connection: local
+  become: yes
+  become_method: sudo
+  gather_facts: no
+  tasks:
+   - name: Install Apache Utilities
+     apt: pkg=apache2-utils state=latest
+
+   - name: run load balance test
+     shell: ab -n {{ test }} -c 10 http://192.168.10.154:80/
+

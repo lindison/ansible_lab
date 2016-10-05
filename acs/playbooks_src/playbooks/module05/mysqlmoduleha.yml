@@ -1,0 +1,23 @@
+---
+- hosts: wp-pb-db
+  become: yes
+  become_method: sudo
+  connection: ssh
+  vars:
+    wp_mysql_db: MyWP
+    wp_mysql_user: wpUser
+    wp_mysql_password: wpP4ss
+    mysql_root_user: root
+    mysql_root_pass: Passw0rd
+    ha_host: 192.168.10.160
+  tasks:
+    - name: Create Remote user account
+#      shell: mysql -u root -p'Passw0rd' -e "CREATE USER 'root'@'192.168.10.153' IDENTIFIED BY 'Passw0rd';"
+      mysql_user:
+             login_user={{ mysql_root_user }}
+             login_password={{ mysql_root_pass }}
+             name={{ mysql_root_user }}
+             password={{ mysql_root_pass }}
+             priv=*.*:ALL
+             host={{ ha_host }}
+             state=present

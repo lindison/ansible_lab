@@ -1,0 +1,13 @@
+--- # This will publish some webpages to wordpress
+- hosts: wp-ro-ha
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  connection: ssh
+  tasks:
+    - name: add PHP header
+      blockinfile:
+         dest: /var/www/html/wp-content/themes/twentysixteen/header.php
+         insertafter: <div class="site-branding">
+         content: |
+            <p class="site-description"><?php echo "I am hosted by {{ ansible_hostname }} with an IP of {{ ansible_ens3.ipv4.address }}.";?></p>

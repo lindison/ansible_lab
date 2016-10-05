@@ -1,0 +1,5 @@
+---
+# site playbook
+- include: appservers.yml
+- include: databases.yml
+- include: loadbalancers.yml

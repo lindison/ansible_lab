@@ -1,0 +1,13 @@
+---
+# Playbook to remove a user from a system
+- hosts: all
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  connection: ssh
+  gather_facts: no
+  tasks:
+  - name: remove jenkins user
+    user: name=jenkins state=absent remove=true
+
+  

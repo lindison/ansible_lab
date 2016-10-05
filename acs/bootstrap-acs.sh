@@ -6,52 +6,65 @@ apt-add-repository -y ppa:ansible/ansible
 apt-get update
 apt-get -y install ansible
 
-# copy examples into /home/vagrant (from inside the mgmt node)
-cp -a /vagrant/* /home/vagrant
-chown -R vagrant:vagrant /home/vagrant
-mv id_rsa* /home/vagrant/.ssh/
+# Create ansible user
+useradd ansible
+echo "ansible:ansible" | chpasswd
+echo "ansible ALL=(root) NOPASSWD:ALL" | tee -a /etc/sudoers.d/ansible
+chmod 0440 /etc/sudoers.d/ansible
+
+# Create ansible home direcgtory
+mkdir /home/ansible
+cp /home/vagrant/.bash* /home/ansible
+cp /home/vagrant/.profile /home/ansible
+
+# Create the SSH key
+mkdir /home/ansible/.ssh
+cat /dev/zero | ssh-keygen -q -N ""
+mv /root/.ssh/id_rsa* /home/ansible/.ssh/
+
+# copy examples into /home/ansible (from inside the mgmt node)
+ln -s /vagrant/playbooks/module01 /home/ansible/module01
+ln -s /vagrant/playbooks/module02 /home/ansible/module02
+ln -s /vagrant/playbooks/module03 /home/ansible/module03
+ln -s /vagrant/playbooks/module04 /home/ansible/module04
+ln -s /vagrant/playbooks/module05 /home/ansible/module05
+ln -s /vagrant/playbooks/module06 /home/ansible/module06
+ln -s /vagrant/playbooks/module07 /home/ansible/module07
+
+# Update ownerships
+chown -R ansible:ansible /home/ansible/
+chmod 600 /home/ansible/.ssh/id_rsa*
 
 # configure hosts file
 cat >> /etc/hosts <<EOL
 
 # ansible lab nodes
-192.168.0.101 rdo01
-192.168.0.102 rdo02
-192.168.0.103 rdo03
-192.168.0.104 rdo04
-192.168.0.105 rdo05
-192.168.0.106 rdo06
+10.11.33.11 lb01
+10.11.33.21 web01
+10.11.33.22 web02
+10.11.33.30 centos
+10.11.33.31 dev01
+10.11.33.41 db01
+10.11.33.10 acs
 
 EOL
-
-# configure known hosts file
-touch /home/vagrant/.ssh/known_hosts
-ssh-keyscan rdo01 rdo02 rdo03 rdo04 rdo05 rdo06 >> /home/vagrant/.ssh/known_hosts
 
 # configure ansible default hosts file
 cp /etc/ansible/hosts /etc/ansible/hosts.orig
 rm /etc/ansible/hosts
 cat >> /etc/ansible/hosts <<EOL
 
-rdo01
-rdo02
-rdo03
-rdo04
-rdo05
-rdo06
+[dev]
+dev01
 
-[openstack]
-rdo01
-rdo02
-rdo03
-rdo04
-rdo05
-rdo06
+[prod]
+web01
+db01
 
-[openstack:vars]
-ansible_ssh_user=vagrant
-ansible_ssh_pass=vagrant
+[ha]
+web01
+web02
+db01
+
 EOL
 
-# install ssh keys
-ansible-playbook ssh-addkey.yml

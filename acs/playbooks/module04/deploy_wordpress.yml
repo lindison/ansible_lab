@@ -1,0 +1,178 @@
+---
+- hosts: db
+  remote_user: ansible
+  become: yes
+  become_method: sudo
+  connection: ssh 
+  vars:
+    wp_mysql_db: MyWP
+    wp_mysql_user: root
+    wp_mysql_password: Passw0rd
+    mysql_root_user: root
+    mysql_root_password: Passw0rd
+  tasks:
+#    - name: Add repo file
+#      template: src=mariadb.list.j2 dest=/etc/apt/sources.list.d/mariadb.list owner=root group=root mode=0644
+#      register: mariadb_list
+     - name: Unattended package installation
+       shell: export DEBIAN_FRONTEND=noninteractive
+       changed_when: false
+
+     - name: Install MariaDB repository
+       apt_repository: repo='deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/10.0/ubuntu trusty main' state=present
+
+     - name: Add repository key to the system
+       apt_key: keyserver=keyserver.ubuntu.com id=0xcbcb082a1bb943db
+     
+     - name: Install MariaDB Server
+       apt: name=mariadb-server state=latest update_cache=yes
+
+#    - name: Add repo key
+#      apt_key: id=1BB943DB url=http://keyserver.ansible.com/pks/lookup?op=get&search=0xCBCB082A1BB943DB state=present
+#      register: mariadb_key
+
+#    - name: Update all packages
+#      apt: upgrade=dist update_cache=yes
+
+     - name: Install needed packages
+       apt: name={{ item }} state=present update_cache=yes
+       with_items:
+          - vim-nox
+          - apache2
+          - mariadb-server
+          - mariadb-client
+          - php5
+          - php5-mysql
+          - python-mysqldb
+
+     - name: Enable remote MySQL access
+       lineinfile: dest=/etc/mysql/my.cnf regexp="^bind-address" line="bind-address = 0.0.0.0"
+
+     - name: Set MariaDB Root Password
+       command: mysqladmin -u root PASSWORD Passw0rd
+
+     - name: Create Remote user account
+#      shell: mysql -u root -p'Passw0rd' -e "CREATE USER 'root'@'192.168.10.151' IDENTIFIED BY 'Passw0rd';"
+       mysql_user:
+        login_user={{ mysql_root_user }}
+        login_password={{ mysql_root_password }}
+        name={{wp_mysql_user}}
+        host=web01
+        password={{ wp_mysql_password }}
+        priv=*.*:ALL
+
+#    - name: Provide Privileges
+#      shell: mysql -u root -p'Passw0rd' -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.10.151';"
+#
+#    - name: Flush Privileges
+#      shell: mysql -u root -p'Passw0rd' -e "FLUSH PRIVILEGES;"
+
+     - name: Copy ~/.my.cnf to nodes
+       template: src=my.cnf.j2 dest=/root/.my.cnf
+
+     - name: Create MariaDB database
+       mysql_db: name={{ wp_mysql_db }} state=present
+
+     - name: Create MariaDB username and password
+       mysql_user:
+          login_user={{ mysql_root_user }}
+          login_password={{ mysql_root_password }}
+          name={{ wp_mysql_user }}
+          host=192.168.10.151
+          password={{ wp_mysql_password }}
+          priv=*.*:ALL
+
+     - name: Ensure MariaDB is running (and enable it at boot)
+       service: name=mysql state=restarted enabled=yes
+
+- hosts: app
+  remote_user: ansible
+  become: yes
+  become_method: sudo
+  vars:
+    wp_mysql_db: MyWP
+    wp_mysql_user: wpUser
+    wp_mysql_password: wpP4ss
+    mysql_root_user: root
+    mysql_root_password: Passw0rd
+    wp_title: Ansible101
+    wp_root_user: root
+    wp_root_pass: Passw0rd
+    wp_root_email: root@solinea.com
+    wp_author_user: ansible
+    wp_author_email: author@solinea.com
+    wp_author_pass: Passw0rd
+  tasks:
+#    - name: Update all packages
+#      apt: upgrade=dist update_cache=yes
+     - name: Install Git
+       apt: pkg=git state=installed
+
+     - name: Unattended package installation
+       shell: export DEBIAN_FRONTEND=noninteractive
+       changed_when: false
+
+     - name: Install MariaDB repository
+       apt_repository: repo='deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/10.0/ubuntu trusty main' state=present
+
+     - name: Add repository key to the system
+       apt_key: keyserver=keyserver.ubuntu.com id=0xcbcb082a1bb943db
+
+     - name: Install needed packages
+       apt: name={{ item }} state=present update_cache=yes
+       with_items:
+          - vim-nox
+          - apache2
+          - mysql-client
+          - php5
+          - php5-mysql
+          - python-mysqldb
+
+     - name: Is WP-CLI downloaded?
+       stat: path="/usr/local/bin/wp"
+       register: wpcli_is_downloaded
+
+     - name: Download WP-CLI
+       get_url:
+          url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+          dest: /usr/local/bin/wp
+          mode: 0655
+       when: wpcli_is_downloaded.stat.exists == False
+
+     - name: Make WP-CLI executable
+       file:
+          path: /usr/local/bin/wp
+          mode: u=rwx,g=rx,o=rx
+       when: wpcli_is_downloaded.stat.exists == False
+
+     - name: Is WordPress downloaded?
+       stat: path=/var/www/html/index.php
+       register: wordpress_is_downloaded
+
+     - name: Download WordPress
+       shell: /usr/local/bin/wp core download --allow-root
+       args:
+          chdir: /var/www/html
+       when: wordpress_is_downloaded.stat.exists == False
+
+     - name: Configure WordPress
+       command: wp core config --path=/var/www/html --dbhost=db01  --dbname=MyWP   --dbuser=root  --dbpass=Passw0rd --allow-root
+     - name: Remove index.html so WP loads at default URL
+       file: path=/var/www/html/index.html state=absent
+
+     - name: Execute the core install and create the root user
+       command: wp core install --url='http://"{{ansible_eth1.ipv4.address}}"' --title="{{wp_title}}" --admin_user="{{wp_root_user}}" --admin_password="{{wp_root_pass}}" --admin_email="{{wp_root_email}}" chdir=/var/www/html
+       become: yes
+       become_user: ansible
+
+     - name: Create a user with the role of author
+       command: wp user create "{{wp_author_user}}" "{{wp_author_email}}" --role='author' --user_pass="{{wp_author_pass}}" chdir=/var/www/html
+       become: yes
+       become_user: ansible
+
+     - name: add PHP header
+       blockinfile:
+          dest: /var/www/html/wp-content/themes/twentysixteen/header.php
+          insertafter: <div class="site-branding">
+          content: |
+            <p class="site-description"><?php echo "I am hosted by {{ ansible_hostname }} with an IP of {{ ansible_eth1.ipv4.address }}.";?></p>

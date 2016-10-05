@@ -1,0 +1,7 @@
+--- # this will add WordPress users
+- hosts: wp-dev
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  connection: ssh
+  

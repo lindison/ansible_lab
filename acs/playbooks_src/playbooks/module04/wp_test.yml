@@ -1,0 +1,38 @@
+---
+- hosts: wp-pb-ap
+  remote_user: ubuntu
+  connection: ssh
+  become: yes
+  become_method: sudo
+  vars:
+    wp_mysql_db: MyWP
+    wp_mysql_user: wpUser
+    wp_mysql_password: wpP4ss
+    mysql_root_user: root
+    mysql_root_password: Passw0rd
+    wp_title: Ansible101
+    wp_root_user: root
+    wp_root_pass: Passw0rd
+    wp_root_email: root@solinea.com
+    wp_author_user: ubuntu
+    wp_author_email: author@solinea.com
+    wp_author_pass: Passw0rd
+
+
+  tasks:
+    - name: Execute the core install and create the root user
+      command: wp core install --url='http://"{{ansible_ens3.ipv4.address}}"' --title="{{wp_title}}" --admin_user="{{wp_root_user}}" --admin_password="{{wp_root_pass}}" --admin_email="{{wp_root_email}}" chdir=/var/www/html
+      become: yes
+      become_user: ubuntu
+
+    - name: Create a user with the role of author
+      command: wp user create "{{wp_author_user}}" "{{wp_author_email}}" --role='author' --user_pass="{{wp_author_pass}}" chdir=/var/www/html
+      become: yes
+      become_user: ubuntu
+
+    - name: add PHP header
+      blockinfile:
+         dest: /var/www/html/wp-content/themes/twentysixteen/header.php
+         insertafter: <div class="site-branding">
+         content: |
+            <p class="site-description"><?php echo "I am hosted by {{ ansible_hostname }} with an IP of {{ ansible_ens3.ipv4.address }}.";?></p>

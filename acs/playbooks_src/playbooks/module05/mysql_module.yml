@@ -1,0 +1,14 @@
+---
+- hosts: db
+  connection: ssh
+  gather_facts: no
+  tasks:
+   - name: 
+     mysql_user: 
+             login_user=root
+             login_password=Passw0rd
+             name=bob
+             password=12345
+             priv=*.*:ALL
+             host=192.168.10.152
+             state=present

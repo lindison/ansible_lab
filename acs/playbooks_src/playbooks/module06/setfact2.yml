@@ -1,0 +1,12 @@
+--- #query set fact from setfact.yml
+- hosts: appservers
+  remote_user: ubuntu
+  become: yes
+  become_method:
+  connection: ssh
+  gather_facts: no
+
+  tasks: 
+    - name: display setfact
+      raw: hostname
+    - debug: msg={{ fact.singlefact }}

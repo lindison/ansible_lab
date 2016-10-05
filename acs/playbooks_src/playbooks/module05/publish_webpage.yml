@@ -1,0 +1,16 @@
+--- # This will publish some webpages to wordpress
+- hosts: wp-pb-ap
+  remote_user: ubuntu
+  connection: ssh
+  tasks:
+    - name: Ensure /home/ubuntu/wp_page is present, if not, create.
+      file: path=/home/ubuntu/wp_page state=directory
+    - name: Pull Page Source from SCM
+      git: repo=https://github.com/lindison/wp_page.git 
+           dest=/home/ubuntu/wp_page/ 
+           clone=yes 
+#    owner=ubuntu group=ubuntu mode=0655
+#    - name: Copy from the files directory Playbooks
+#      copy: src=~/pages/content.txt dest=/home/ubuntu/cicd/pages/webpage.txt owner=ubuntu group=ubuntu mode=0655 backup=yes
+    - name: deploy the Webpage to WordPress
+      command: wp post update /home/ubuntu/wp_page/content.txt --post_type=page --post_title='Ansible published Webpage' 1 chdir=/var/www/html

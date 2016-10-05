@@ -1,0 +1,12 @@
+--- # Install user desingated WordPress Theme
+    # The theme must be specified from the command line using the -e switch
+    # e.g. 'ansible=playbook install_plugin.yml -e plugin=start'
+- hosts: wp-dev
+  remote_user: ubuntu
+  connection: ssh
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Installing WordPress {{ plugin }} plugin
+      command: wp plugin install {{ plugin }} --allow-root chdir=/var/www/html
+

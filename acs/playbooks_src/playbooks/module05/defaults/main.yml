@@ -1,0 +1,8 @@
+---
+# defaults file for wp-dependencies
+  wp_mysql_db: MyWP
+  wp_mysql_user: wpUser
+  wp_mysql_password: wpP4ss
+  mysql_root_user: root
+  mysql_root_password: Solinea
+  mysql_host_ip: 192.168.35.12
