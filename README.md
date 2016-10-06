@@ -6,24 +6,38 @@ Ansible can run off the development machine (wp-dev) or locally, assuming networ
 
 These playbooks require the following:
 
-[wp-dev]
-1 host
+[ansible]
+acs
 
-[wp-pb-ap]
-1 host
+[redhat]
+centos
 
-[wp-pb-db]
-1 host
+[prod:children]
+app
+db
+ha
+ha-app
+lb
 
-[wp-ro-all]
-1 host
+[dev]
+dev01
 
-[wp-ro-ap]
-1 host
+[app]
+web01
 
-[wp-pb-all]
-wp-pb-ap
-wp-pb-db
+[db]
+db01
+
+[ha]
+web01
+web02
+db01
+
+[ha-app]
+web02
+
+[lb]
+lb01
 
 
 To update the remote_user and home directories, you can run this:
