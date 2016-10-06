@@ -1,6 +1,6 @@
 --- # This will publish some webpages to wordpress
 - hosts: dev
-  remote_user: ansible
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   connection: ssh

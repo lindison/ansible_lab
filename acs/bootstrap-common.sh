@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# install ansible (http://docs.ansible.com/intro_installation.html)
 
 # configure hosts file
 cat >> /etc/hosts <<EOL
@@ -16,14 +15,14 @@ cat >> /etc/hosts <<EOL
 
 EOL
 
-# Create a local ansible user
+# Create a local ubuntu user
 
-useradd ansible
-echo "ansible:ansible" | chpasswd
-echo "ansible ALL=(root) NOPASSWD:ALL" | tee -a /etc/sudoers.d/ansible
-chmod 0440 /etc/sudoers.d/ansible
-mkdir /home/ansible
-cp /home/vagrant/.bashrc /home/ansible
-cp /home/vagrant/.profile /home/ansible
-chown -R ansible:ansible /home/ansible
+useradd ubuntu
+echo "ubuntu:ubuntu" | chpasswd
+echo "ubuntu ALL=(root) NOPASSWD:ALL" | tee -a /etc/sudoers.d/ubuntu
+chmod 0440 /etc/sudoers.d/ubuntu
+mkdir /home/ubuntu
+cp /home/vagrant/.bashrc /home/ubuntu
+cp /home/vagrant/.profile /home/ubuntu
+chown -R ubuntu:ubuntu /home/ubuntu
 

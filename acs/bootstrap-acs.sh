@@ -1,39 +1,39 @@
 #!/usr/bin/env bash
 
-# install ansible (http://docs.ansible.com/intro_installation.html)
+# install ubuntu (http://docs.ubuntu.com/intro_installation.html)
 apt-get -y install software-properties-common
 apt-add-repository -y ppa:ansible/ansible
 apt-get update
 apt-get -y install ansible
 
-# Create ansible user
-useradd ansible
-echo "ansible:ansible" | chpasswd
-echo "ansible ALL=(root) NOPASSWD:ALL" | tee -a /etc/sudoers.d/ansible
-chmod 0440 /etc/sudoers.d/ansible
+# Create ubuntu user
+useradd ubuntu
+echo "ubuntu:ubuntu" | chpasswd
+echo "ubuntu ALL=(root) NOPASSWD:ALL" | tee -a /etc/sudoers.d/ubuntu
+chmod 0440 /etc/sudoers.d/ubuntu
 
-# Create ansible home direcgtory
-mkdir /home/ansible
-cp /home/vagrant/.bash* /home/ansible
-cp /home/vagrant/.profile /home/ansible
+# Create ubuntu home direcgtory
+mkdir /home/ubuntu
+cp /home/vagrant/.bash* /home/ubuntu
+cp /home/vagrant/.profile /home/ubuntu
 
 # Create the SSH key
-mkdir /home/ansible/.ssh
+mkdir /home/ubuntu/.ssh
 cat /dev/zero | ssh-keygen -q -N ""
-mv /root/.ssh/id_rsa* /home/ansible/.ssh/
+mv /root/.ssh/id_rsa* /home/ubuntu/.ssh/
 
-# copy examples into /home/ansible (from inside the mgmt node)
-ln -s /vagrant/playbooks/module01 /home/ansible/module01
-ln -s /vagrant/playbooks/module02 /home/ansible/module02
-ln -s /vagrant/playbooks/module03 /home/ansible/module03
-ln -s /vagrant/playbooks/module04 /home/ansible/module04
-ln -s /vagrant/playbooks/module05 /home/ansible/module05
-ln -s /vagrant/playbooks/module06 /home/ansible/module06
-ln -s /vagrant/playbooks/module07 /home/ansible/module07
+# copy examples into /home/ubuntu (from inside the mgmt node)
+ln -s /vagrant/playbooks/module01 /home/ubuntu/module01
+ln -s /vagrant/playbooks/module02 /home/ubuntu/module02
+ln -s /vagrant/playbooks/module03 /home/ubuntu/module03
+ln -s /vagrant/playbooks/module04 /home/ubuntu/module04
+ln -s /vagrant/playbooks/module05 /home/ubuntu/module05
+ln -s /vagrant/playbooks/module06 /home/ubuntu/module06
+ln -s /vagrant/playbooks/module07 /home/ubuntu/module07
 
 # Update ownerships
-chown -R ansible:ansible /home/ansible/
-chmod 600 /home/ansible/.ssh/id_rsa*
+chown -R ubuntu:ubuntu /home/ubuntu/
+chmod 600 /home/ubuntu/.ssh/id_rsa*
 
 # configure hosts file
 cat >> /etc/hosts <<EOL

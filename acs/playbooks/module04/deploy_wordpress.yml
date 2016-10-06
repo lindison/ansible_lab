@@ -1,9 +1,9 @@
 ---
 - hosts: db
-  remote_user: ansible
+  remote_user: ubuntu
   become: yes
   become_method: sudo
-  connection: ssh 
+  connection: ssh
   vars:
     wp_mysql_db: MyWP
     wp_mysql_user: root
@@ -23,7 +23,7 @@
 
      - name: Add repository key to the system
        apt_key: keyserver=keyserver.ubuntu.com id=0xcbcb082a1bb943db
-     
+
      - name: Install MariaDB Server
        apt: name=mariadb-server state=latest update_cache=yes
 
@@ -86,7 +86,7 @@
        service: name=mysql state=restarted enabled=yes
 
 - hosts: app
-  remote_user: ansible
+  remote_user: ubuntu
   become: yes
   become_method: sudo
   vars:
@@ -163,12 +163,12 @@
      - name: Execute the core install and create the root user
        command: wp core install --url='http://"{{ansible_eth1.ipv4.address}}"' --title="{{wp_title}}" --admin_user="{{wp_root_user}}" --admin_password="{{wp_root_pass}}" --admin_email="{{wp_root_email}}" chdir=/var/www/html
        become: yes
-       become_user: ansible
+       become_user: ubuntu
 
      - name: Create a user with the role of author
        command: wp user create "{{wp_author_user}}" "{{wp_author_email}}" --role='author' --user_pass="{{wp_author_pass}}" chdir=/var/www/html
        become: yes
-       become_user: ansible
+       become_user: ubuntu
 
      - name: add PHP header
        blockinfile:

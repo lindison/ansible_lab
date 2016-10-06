@@ -1,6 +1,0 @@
----
-- hosts: all
-- hosts: wp-ro-all
-  tasks:
-  - name: 
-    debug: {{ ansible_ens3.ipv4.address }}
