@@ -1,5 +1,5 @@
 # Define the Vagrant environment for Ansible 101
-#
+# Automated Ansible Lab Environment Builder
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
