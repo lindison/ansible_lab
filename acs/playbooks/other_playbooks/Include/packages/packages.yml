@@ -1,6 +1,0 @@
-- name: Install the Apache Web Server
-  apt: pkg=apache2 state=latest
-  notify: Restart Apache2
-- name: Install the Lynx Web Browser
-  apt: pkg=lynx state=latest
-  

@@ -1,6 +1,0 @@
----
-- hosts: development
-  tasks:
-  - name: install lynx on development servers
-    apt: pkg=lynx state=installed update_cache=true
-

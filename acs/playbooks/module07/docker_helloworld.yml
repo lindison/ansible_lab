@@ -1,9 +1,0 @@
---- # docker things
-- hosts: wp-dev
-  remote_user: ubuntu
-  become: yes
-  become_method: sudo
-  connection: ssh
-  tasks:
-    - name: run container hello-world
-      docker: name=hello-world image=hello-world state=started 

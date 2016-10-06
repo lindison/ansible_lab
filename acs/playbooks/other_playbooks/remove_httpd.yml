@@ -1,8 +1,0 @@
----
-- hosts: centos
-  become: yes
-  become_method: sudo
-  tasks:
-  - name: remove httpd from all servers
-    yum: pkg=httpd state=absent update_cache=true
-

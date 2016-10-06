@@ -1,9 +1,0 @@
---- # Install Docker Weave
-- hosts: docker
-  remote_user: ubuntu
-  become: yes
-  become_method: sudo
-  connection: ssh
-  tasks:
-   - name: Pull Weave
-     get_url: url=https://github.com/zettio/weave/releases/download/latest_release/weave dest=/usr/local/bin mode=0440

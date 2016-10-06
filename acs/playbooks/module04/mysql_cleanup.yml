@@ -1,7 +1,0 @@
----
-- hosts: wp-pb-db
-  connection: ssh 
-  tasks:
-    - name: Create Remote user account
-      shell: mysql -u root -p'Passw0rd' -e "DROP USER 'root'@'192.168.10.153"
-

@@ -1,6 +1,0 @@
----
-# file: movies.yml
-- hosts: wp-dev
-
-  roles: 
-    - { role: aliens }

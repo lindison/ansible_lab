@@ -1,9 +1,0 @@
---- # user module playbook
-- hosts: appservers
-  remote_user: ubuntu
-  become: yes
-  become_method: sudo
-  connection: ssh
-  tasks:
-   - name: add the user called test apache to the apache web client
-     user: name=tstapache state=absent remove=yes
