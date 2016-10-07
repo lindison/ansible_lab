@@ -36,7 +36,7 @@ Vagrant.configure("2") do |config|
   # Create some dev servers
   (1..1).each do |i|
     config.vm.define "dev0#{i}" do |dev|
-        dev.vm.box="ubuntu/wily64"
+        dev.vm.box="ubuntu/trusty64"
         dev.vm.hostname = "dev0#{i}"
         dev.vm.network :private_network, ip: "10.11.33.3#{i}"
 #       dev.vm.network "public_network", bridge: "enp6s0", ip: "192.168.1.16#{i}"
@@ -61,7 +61,7 @@ Vagrant.configure("2") do |config|
 
   # Create some db servers
   config.vm.define :centos  do |centos|
-      centos.vm.box= "centos/6"
+      centos.vm.box= "centos/7"
       centos.vm.hostname = "centos"
       centos.vm.network :private_network, ip: "10.11.33.30"
 #        app.vm.network "public_network", bridge: "enp6s0", ip: "192.168.1.17#{i}"
@@ -78,7 +78,7 @@ Vagrant.configure("2") do |config|
     acs.vm.network :private_network, ip: "10.11.33.10"
 #    acs.vm.network :private_network, ip: "192.168.33.10"
     acs.vm.provider "virtualbox" do |vb|
-      vb.memory = "512"
+      vb.memory = "1024"
     end
     acs.vm.provision :shell, path: "bootstrap-acs.sh"
   end

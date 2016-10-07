@@ -23,19 +23,24 @@ cat /dev/zero | ssh-keygen -q -N ""
 mv /root/.ssh/id_rsa* /home/ubuntu/.ssh/
 
 # copy examples into /home/ubuntu (from inside the mgmt node)
-ln -s /vagrant/playbooks/module01 /home/ubuntu/module01
-ln -s /vagrant/playbooks/module02 /home/ubuntu/module02
-ln -s /vagrant/playbooks/module03 /home/ubuntu/module03
-ln -s /vagrant/playbooks/module04 /home/ubuntu/module04
-ln -s /vagrant/playbooks/module05 /home/ubuntu/module05
-ln -s /vagrant/playbooks/module06 /home/ubuntu/module06
-ln -s /vagrant/playbooks/module07 /home/ubuntu/module07
+apt-get install git -y
+git clone https://github.com/lindison/playbooks_ansible/
+mv playbooks_ansible /home/ubuntu/playbooks_ansible/
+
+ln -s /home/ubuntu/playbooks_ansible/module01 lab01
+ln -s /home/ubuntu/playbooks_ansible/module02 lab02
+ln -s /home/ubuntu/playbooks_ansible/module03 lab03
+ln -s /home/ubuntu/playbooks_ansible/module04 lab04
+ln -s /home/ubuntu/playbooks_ansible/module05 lab05
+ln -s /home/ubuntu/playbooks_ansible/module06 lab06
+ln -s /home/ubuntu/playbooks_ansible/module07 lab07
 
 # Update ownerships
 chown -R ubuntu:ubuntu /home/ubuntu/
 chmod 600 /home/ubuntu/.ssh/id_rsa*
 
 # configure hosts file
+
 cat >> /etc/hosts <<EOL
 
 # ansible lab nodes
