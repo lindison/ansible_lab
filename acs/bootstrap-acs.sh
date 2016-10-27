@@ -27,13 +27,13 @@ apt-get install git -y
 git clone https://github.com/lindison/playbooks_ansible/
 mv playbooks_ansible /home/ubuntu/playbooks_ansible/
 
-ln -s /home/ubuntu/playbooks_ansible/module01 lab01
-ln -s /home/ubuntu/playbooks_ansible/module02 lab02
-ln -s /home/ubuntu/playbooks_ansible/module03 lab03
-ln -s /home/ubuntu/playbooks_ansible/module04 lab04
-ln -s /home/ubuntu/playbooks_ansible/module05 lab05
-ln -s /home/ubuntu/playbooks_ansible/module06 lab06
-ln -s /home/ubuntu/playbooks_ansible/module07 lab07
+ln -s /home/ubuntu/playbooks_ansible/module01 /home/ubuntu/lab01
+ln -s /home/ubuntu/playbooks_ansible/module02 /home/ubuntu/ lab02
+ln -s /home/ubuntu/playbooks_ansible/module03 /home/ubuntu/lab03
+ln -s /home/ubuntu/playbooks_ansible/module04 /home/ubuntu/lab04
+ln -s /home/ubuntu/playbooks_ansible/module05 /home/ubuntu/lab05
+ln -s /home/ubuntu/playbooks_ansible/module06 /home/ubuntu/lab06
+ln -s /home/ubuntu/playbooks_ansible/module07 /home/ubuntu/lab07
 
 # Update ownerships
 chown -R ubuntu:ubuntu /home/ubuntu/
@@ -51,6 +51,7 @@ cat >> /etc/hosts <<EOL
 10.11.33.31 dev01
 10.11.33.41 db01
 10.11.33.10 acs
+10.11.33.51 aws01
 
 EOL
 
